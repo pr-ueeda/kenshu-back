@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  php:
+    image: php:7.2-apache
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./html:/var/www/html
+    ports:
+      - 8000:80
+  mysql:
+    image: mysql:5.7
+    container_name: kenshu-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+      - db-volume:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: kenshu-phpmyadmin
+    links:
+      - mysql:db
+    ports:
+      - 8080:80
+
+volumes:
+  db-volume:
