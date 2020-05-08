@@ -1,6 +1,6 @@
 <?php
 
-$dns = 'mysql:dbname=kenshu-back;host=localhost;charset=utf8';
+$dns = 'mysql:dbname=kenshu-back;host=kenshu-mysql;charset=utf8';
 $root = 'root';
 $pass = 'pass';
 
