@@ -7,22 +7,10 @@ require_once dirname(__FILE__) . '/../models/users.php';
 use app\html\controller;
 use app\model\users;
 
-class register_controller extends controller {
-    private $route_name = 'register_controller';
+class user_controller extends controller {
+    private $route_name = 'user_controller';
 
     public function __construct() { }
-
-    public function index() {
-        $users = new register_controller();
-
-        return $this->view($this->route_name, [
-            'email_address' => $users->getAll(),
-        ]);
-    }
-
-    public function select() {
-
-    }
 
     public function post() {
         if (isset($_POST['add'])) {
@@ -33,6 +21,15 @@ class register_controller extends controller {
 
             $users = new users();
             $users->insert([
+                'email_address' => $param,
+                'password' => $param
+            ]);
+        } else if (isset($_POST['signin'])) {
+            $param = filter_input(INPUT_POST, 'name',
+                FILTER_SANITIZE_SPECIAL_CHARS);
+
+            $users = new users();
+            $users->select([
                 'email_address' => $param,
                 'password' => $param
             ]);

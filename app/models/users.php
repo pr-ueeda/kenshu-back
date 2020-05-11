@@ -27,15 +27,43 @@ EOF;
         return $rs;
     }
 
-    public function insert(string $email_address, string $password) {
-        $sql = <<< EOF
-INSERT INTO {$this->table_name}
-(email_address, pass) VALUES (?, ?)
-EOF;
+    public function signin(string $email_address, $password) {
+        $sql = "SELECT * FROM {$this->table_name} WHERE email_address = ?";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array($email_address));
+
+            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                session_regenerate_id(true);
+                if ($password == $row['pass']) {
+                    $email_address = $row['email_address'];
+                    $sql = "SELECT * FROM {$this->table_name} WHERE email_address = $email_address";
+                    $stmt = $this->pdo->query($sql);
+                    foreach ($stmt as $row) {
+                        $row['display_name'];
+                    }
+                    $_SESSION['display_name'] = $row['display_name'];
+                    echo 'ログイン完了' .  $row['display_name'];
+                } else {
+                    echo '~ログインに失敗しました。';
+                }
+            } else {
+                echo '~ログインに失敗しました。';
+            }
+        } catch (\Exception $e) {
+            echo $e;
+        }
+    }
+
+    public function signup(string $display_name, string $email_address, string $password) {
+        $sql = "INSERT INTO {$this->table_name} (display_name ,email_address, pass) VALUES (? ,?, ?)";
+
         try {
             $stmt = $this->pdo->prepare($sql);
             //$stmt->bindParam(':password',$param['password'],PDO::PARAM_STR);
-            $stmt->execute(array($email_address, $password));
+            $stmt->execute(array($display_name, $email_address, $password));
+            header("Location: ../html/index.php");
         } catch (\Exception $e) {
             echo $e;
         }
