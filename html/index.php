@@ -10,18 +10,20 @@ if (empty($_SERVER['REQUEST_URI'])) {
     exit();
 }
 
+/*
 // アクセスされたURIを'/'で区切る
 $parse_uri = explode('/', $_SERVER['REQUEST_URI']);
 // URIの最後を取得
 $last_uri = end($parse_uri);
 // $last_uriで取得した値を切り離す
 $call = substr($last_uri, 0, strcspn($last_uri, '?'));
+*/
 
-// 切り離したURIに基づくファイル名が../app/controllers にあるか
-if (file_exists('../app/controllers/'. $call . '.php')) {
+// 切り離したURIに基づくファイル名が../controllers にあるか
+if (file_exists('../app/controllers/register_controller.php')) {
     // あった場合includeし、controllerをインスタンス化
-    include('../app/controllers/' . $call . '.php');
-    $class = 'app\controllers\\' . $call;
+    include('../app/controllers/register_controller.php');
+    $class = 'app\controllers\\register_controller';
     $obj = new $class();
 
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -34,7 +36,7 @@ if (file_exists('../app/controllers/'. $call . '.php')) {
     exit;
 } else {
     // ファイルが見つからない場合は404エラーを返す
-    echo "404 NOT FOUND";
+    echo "Not found";
     // header(" 404 NOT FOUND");
     exit();
 }
