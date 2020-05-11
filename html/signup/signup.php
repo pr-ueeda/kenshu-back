@@ -4,7 +4,7 @@
 </head>
 <body>
 <?php
-require_once '../app/controllers/register_controller.php';
+require_once '../../app/controllers/register_controller.php';
 
 use app\model\users;
 

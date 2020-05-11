@@ -1,9 +1,9 @@
 <?php
-namespace app\controller;
+namespace app\html;
 
-require_once dirname(__FILE__) . '/../vendor/autoload.php';
-require_once '../libs/smarty-3.1.34/libs/Smarty.class.php';
-require_once dirname(__FILE__) . '/../utility/utility.php';
+//require_once dirname(__FILE__) . '../../vendor/autoload.php';
+//require_once '../../libs/smarty-3.1.34/libs/Smarty.class.php';
+//require_once dirname(__FILE__) . '../../utility/utility.php';
 
 use MonoLog\Logger;
 use Monolog\Handler\StreamHandler;

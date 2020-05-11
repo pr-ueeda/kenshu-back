@@ -6,7 +6,7 @@ require_once 'model.php';
 use PDO;
 
 class users extends model {
-    private $name = 'register_controller';
+    private $table_name = 'users';
 
     public function __construct() {
         parent::__construct();
@@ -14,32 +14,30 @@ class users extends model {
 
     public function getAll():array {
         $sql = <<< EOF
-SELECT * FROM ($this->name)
+SELECT * FROM ($this->table_name)
 EOF;
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll();
-        } catch (\Exception $error) {
-            $this->logging($error->getMessage());
+        } catch (\Exception $e) {
+            echo $e;
         }
 
         return $rs;
     }
 
-    public function insert(array $param) {
+    public function insert(string $email_address, string $password) {
         $sql = <<< EOF
-INSERT INTO {$this->name}
-(email_address, pass) VALUES (:email_address, :password)
+INSERT INTO {$this->table_name}
+(email_address, pass) VALUES (?, ?)
 EOF;
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':email_address',$param['email_address'],PDO::PARAM_STR);
-            $stmt->bindParam(':password',$param['password'],PDO::PARAM_STR);
-            $stmt->execute();
+            //$stmt->bindParam(':password',$param['password'],PDO::PARAM_STR);
+            $stmt->execute(array($email_address, $password));
         } catch (\Exception $e) {
             echo $e;
         }
     }
-
 }
