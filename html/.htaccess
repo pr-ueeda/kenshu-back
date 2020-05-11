@@ -6,5 +6,7 @@
     RewriteCond %{REQUEST_URI} !\.jpg$
     RewriteCond %{REQUEST_URI} !\.gif$
     RewriteCond %{REQUEST_URI} !\.png$
-    RewriteRule ^.*$ index.php
+    RewriteCond %{REQUEST_FILENAME} ! -d
+    RewriteCond %{REQUEST_FILENAME}\.php -f
+    RewriteRule ^(.*)$ $1.php [NC,L]
 </IfModule>
