@@ -2,7 +2,6 @@
 namespace app\model;
 
 require_once 'model.php';
-
 use PDO;
 
 class users extends model {
@@ -44,7 +43,8 @@ EOF;
                         $row['display_name'];
                     }
                     $_SESSION['display_name'] = $row['display_name'];
-                    echo 'ログイン完了' .  $row['display_name'];
+                    header("Location: ../index.php");
+                    exit();
                 } else {
                     echo '~ログインに失敗しました。';
                 }
@@ -63,7 +63,9 @@ EOF;
             $stmt = $this->pdo->prepare($sql);
             //$stmt->bindParam(':password',$param['password'],PDO::PARAM_STR);
             $stmt->execute(array($display_name, $email_address, $password));
-            header("Location: ../html/index.php");
+            $_SESSION['display_name'] = $display_name;
+            header("Location: ../index.php");
+            exit();
         } catch (\Exception $e) {
             echo $e;
         }
