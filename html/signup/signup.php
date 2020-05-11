@@ -11,6 +11,7 @@ use app\model\users;
 $signup_message = '';
 
 if (isset($_POST['add'])) {
+    $display_name = $_POST['display_name'];
     $email_address = $_POST['email_address'];
     $password = $_POST['password'];
 
@@ -22,6 +23,8 @@ if (isset($_POST['add'])) {
 ?>
 <form method="post">
     <div><?php echo  htmlspecialchars($signup_message, ENT_QUOTES) ?></div>
+    <label>表示名</label>
+    <input type="text" id="display_name" name="display_name" class="form-control" placeholder="displayName">
     <label>email address</label>
     <input type="text" id="email_address" name="email_address" class="form-control" placeholder="EmailAddress">
     <label>password</label>
