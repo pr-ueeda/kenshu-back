@@ -1,3 +1,20 @@
+<?php
+session_start();
+
+if (isset($_POST['signout'])) {
+    if (isset($_SESSION['display_name'])) {
+        echo 'ログアウトしました。';
+    } else {
+        echo 'セッションタイムアウト';
+    }
+
+    $_SESSION = array();
+
+    @session_destroy();
+}
+
+?>
+
 <!DOCTYPE>
 <html lang="ja">
 <head>
@@ -19,10 +36,17 @@
                 <a class="blog-header-logo text-dark" href="#">記事投稿サイト</a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
+                <strong class="text-success"><?php echo $_SESSION['display_name'] ?></strong>
                 <div class="col-4 pt-1">
-                    <a class="text-muted" href="#">ログイン</a>
+                    <?php if ($_SESSION['display_name'] != '') :?>
+                    <form method="post">
+                        <button name="signout" id="signout" type="submit" class="btn btn-info">ログアウト</button>
+                    </form>
+                    <?php else : ?>
+                    <a class="text-muted" href="/signin/signin.php">ログイン</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="/signup/signup.php">サインアップ</a>
+                    <?php endif; ?>
                 </div>
-                <a class="btn btn-sm btn-outline-secondary" href="../html/signup/signup.php">サインアップ</a>
             </div>
         </div>
     </header>

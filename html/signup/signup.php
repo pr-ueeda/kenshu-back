@@ -1,12 +1,9 @@
-<!DOCTYPE>
-<html lang="ja">
-<head>
-</head>
-<body>
 <?php
-require_once '../../app/controllers/register_controller.php';
-
 use app\model\users;
+
+require_once "../../app/controllers/user_controller.php";
+
+session_start();
 
 $signup_message = '';
 
@@ -16,11 +13,17 @@ if (isset($_POST['add'])) {
     $password = $_POST['password'];
 
     $users = new users();
-    $users->insert($email_address, $password);
+    $users->signup($display_name, $email_address, $password);
 
-    $signup_message = '登録完了' . $email_address . $password;
+    $signup_message = '登録完了' . $email_address . $password . 'user名' . $display_name;
 }
 ?>
+<!DOCTYPE>
+<html lang="ja">
+<head>
+</head>
+<body>
+
 <form method="post">
     <div><?php echo  htmlspecialchars($signup_message, ENT_QUOTES) ?></div>
     <label>表示名</label>
