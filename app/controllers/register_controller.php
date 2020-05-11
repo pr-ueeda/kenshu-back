@@ -1,9 +1,10 @@
 <?php
-namespace app\controller;
+namespace app\controllers;
 
 require_once 'controller.php';
 require_once dirname(__FILE__) . '/../models/users.php';
 
+use app\html\controller;
 use app\model\users;
 
 class register_controller extends controller {
@@ -17,6 +18,10 @@ class register_controller extends controller {
         return $this->view($this->route_name, [
             'email_address' => $users->getAll(),
         ]);
+    }
+
+    public function select() {
+
     }
 
     public function post() {
