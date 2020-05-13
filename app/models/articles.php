@@ -42,7 +42,7 @@ class articles extends model {
     }
 
     public function get_images() {
-        $sql = "SELECT binary_data FROM {$this->images_table}";
+        $sql = "SELECT image_url FROM {$this->images_table}";
 
         try {
             $stmt = $this->pdo->prepare($sql);
@@ -65,7 +65,7 @@ class articles extends model {
             $last_insert_article_id = $this->pdo->lastInsertId('article_id');
 
             $this->insert_user_articles($last_insert_article_id);
-
+            // todo: article_imagesテーブルにarticle_idとimage_idを入れる
 
             header('Location: ../user/mypage.php');
             exit();
@@ -86,12 +86,12 @@ class articles extends model {
         }
     }
 
-    public function insert_image(string $file_name, string $binary_data) {
-        $sql = "INSERT INTO {$this->images_table} (file_name, binary_data) VALUES (?, ?)";
+    public function insert_image(string $image_url) {
+        $sql = "INSERT INTO {$this->images_table} (image_url) VALUES (?)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($file_name, $binary_data));
+            $stmt->execute(array($image_url));
 
             $last_insert_image_id = $this->pdo->lastInsertId('image_id');
         } catch (\Exception $e) {
