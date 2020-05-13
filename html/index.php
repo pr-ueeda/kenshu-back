@@ -2,15 +2,9 @@
 session_start();
 
 if (isset($_POST['signout'])) {
-    if (isset($_SESSION['display_name'])) {
-        echo 'ログアウトしました。';
-    } else {
-        echo 'セッションタイムアウト';
-    }
-
     $_SESSION = array();
 
-    @session_destroy();
+    session_destroy();
 }
 
 ?>
@@ -36,31 +30,21 @@ if (isset($_POST['signout'])) {
                 <a class="blog-header-logo text-dark" href="#">記事投稿サイト</a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-                <strong class="text-success"><?php echo $_SESSION['display_name'] ?></strong>
+                <strong class="text-success"><?php echo $_SESSION['user_id'] ?></strong>
                 <div class="col-4 pt-1">
                     <?php if ($_SESSION['display_name'] != '') :?>
-                    <form method="post">
+                    <a class="text-muted" href="features/article/article_post.php">記事投稿</a>
+                    <form class="" method="post">
                         <button name="signout" id="signout" type="submit" class="btn btn-info">ログアウト</button>
                     </form>
                     <?php else : ?>
-                    <a class="text-muted" href="/signin/signin.php">ログイン</a>
+                    <a class="col-4 text-muted" href="features/user/signin.php">ログイン</a>
                     <a class="btn btn-sm btn-outline-secondary" href="/signup/signup.php">サインアップ</a>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </header>
-    <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
-        <div class="col-md-6 px-0">
-            <!-- <h1 class="display-4 font-italic">Title of a longer featured blog post</h1> -->
-            <h1 class="display-4 font-italic">人気のブログポストのタイトル</h1>
-            <!-- <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what's most interesting in this post's contents.</p> -->
-            <p class="lead my-3">前置きとなる数行の文を書きます。新しい読者にこのポストの何が最も面白いかを早く効率よく伝えましょう。</p>
-            <!-- <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p> -->
-            <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">続きを読む</a></p>
-        </div>
-    </div>
-
     <div class="row mb-2">
         <div class="col-md-6">
             <div class="card flex-md-row mb-4 shadow-sm h-md-250">
@@ -84,6 +68,15 @@ if (isset($_POST['signout'])) {
         <div class="col-md-6">
             <div class="card flex-md-row mb-4 shadow-sm h-md-250">
                 <div class="card-body d-flex flex-column align-items-start">
+                    <?php
+                    use app\model\articles;
+
+                    require_once '../app/models/articles.php';
+
+                    $article = new articles();
+                    $article->get_all();
+
+                    ?>
                     <!-- <strong class="d-inline-block mb-2 text-success">Design</strong> -->
                     <strong class="d-inline-block mb-2 text-success">デザイン</strong>
                     <h3 class="mb-0">
@@ -102,165 +95,323 @@ if (isset($_POST['signout'])) {
     </div>
 </div>
 <main role="main" class="container">
-    <div class="row">
-        <div class="col-md-8 blog-main">
-            <h3 class="pb-3 mb-4 font-italic border-bottom">
-                From the Firehose
-            </h3>
+    <table class="table table-hover table-condensed settinglist">
+        <thead>
+        <tr class=" hidden-xs">
+            <th class="center">日付</th>
+            <th>タイトル</th>
+            <th class="center">チェック</th>
+            <th class="center">編集</th>
+            <th class="center">削除</th>
+            <th class="center" colspan="2">順番</th>
+        </tr>
+        </thead>
 
-            <div class="blog-post">
-                <!-- <h2 class="blog-post-title">Sample blog post</h2> -->
-                <h2 class="blog-post-title">サンプルブログポスト</h2>
-                <!-- <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p> -->
-                <p class="blog-post-meta">2014/01/01 by <a href="#">太郎</a></p>
+        <tbody>
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/20</span></td>
+            <td>レスポンシブWebデザインとは</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/4.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(4,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(4,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(4,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(4,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-                <!-- <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p> -->
-                <p>このブログポストは Bootstrap のスタイルを用いて作られた数種類の異なるタイプのコンテンツを含んでいます。基本のタイポグラフィ, 画像, コードはすべてサポートされています。</p>
-                <hr>
-                <!-- <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p> -->
-                <p>吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも <a href="#">薄暗いじめじめした所</a>でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。この書生というのは時々我々を捕えて煮て食うという話である。</p>
-                <blockquote>
-                    <!-- <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p> -->
-                    <p>しかしその当時は何という考もなかったから別段恐しいとも思わなかった。ただ<strong>彼の掌に載せられてスーと持ち上げられた時</strong>何だかフワフワした感じがあったばかりである。</p>
-                </blockquote>
-                <!-- <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p> -->
-                <p>掌の上で少し落ちついて書生の顔を見たのが<em>いわゆる人間というものの見始</em>であろう。この時妙なものだと思った感じが今でも残っている。</p>
-                <!-- <h2>Heading</h2> -->
-                <h2>見出し</h2>
-                <!-- <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> -->
-                <p>第一毛をもって装飾されべきはずの顔がつるつるしてまるで薬缶だ。その後猫にもだいぶ逢ったがこんな片輪には一度も出会わした事がない。のみならず顔の真中があまりに突起している。そうしてその穴の中から時々ぷうぷうと煙を吹く。どうも咽せぽくて実に弱った。これが人間の飲む煙草というものである事はようやくこの頃知った。</p>
-                <!-- <h3>Sub-heading</h3> -->
-                <h3>サブの見出し</h3>
-                <!-- <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p> -->
-                <!-- <pre><code>Example code block</code></pre> -->
-                <pre><code>コードブロックの例</code></pre>
-                <!-- <p>Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p> -->
-                <p>しかしその当時は何という考もなかったから別段恐しいとも思わなかった。ただ彼の掌に載せられてスーと持ち上げられた時何だかフワフワした感じがあったばかりである。</p>
-                <!-- <h3>Sub-heading</h3> -->
-                <h3>サブの見出し</h3>
-                <!-- <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p> -->
-                <p>吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。</p>
-                <ul>
-                    <!-- <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li> -->
-                    <li>この書生というのは時々我々を捕えて煮て食うという話である。</li>
-                    <!-- <li>Donec id elit non mi porta gravida at eget metus.</li> -->
-                    <li>しかしその当時は何という考もなかったから別段恐しいとも思わなかった。</li>
-                    <!-- <li>Nulla vitae elit libero, a pharetra augue.</li> -->
-                    <li>ただ彼の掌に載せられてスーと持ち上げられた時何だかフワフワした感じがあったばかりである。</li>
-                </ul>
-                <!-- <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p> -->
-                <p>掌の上で少し落ちついて書生の顔を見たのがいわゆる人間というものの見始であろう。</p>
-                <ol>
-                    <!-- <li>Vestibulum id ligula porta felis euismod semper.</li> -->
-                    <li>この時妙なものだと思った感じが今でも残っている。</li>
-                    <!-- <li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li> -->
-                    <li>第一毛をもって装飾されべきはずの顔がつるつるしてまるで薬缶だ。</li>
-                    <!-- <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li> -->
-                    <li>その後猫にもだいぶ逢ったがこんな片輪には一度も出会わした事がない。</li>
-                </ol>
-                <p>のみならず顔の真中があまりに突起している。そうしてその穴の中から時々ぷうぷうと煙を吹く。どうも咽せぽくて実に弱った。</p>
-            </div><!-- /.blog-post -->
+        <tr class=" visible-xs">
+            <td colspan="7">レスポンシブWebデザインとは
+                <a class="btn btn-link pull-right " href="../webdir/4.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/20</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(4,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(4,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(4,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(4,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-            <div class="blog-post">
-                <!-- <h2 class="blog-post-title">Another blog post</h2> -->
-                <h2 class="blog-post-title">別のブログポスト</h2>
-                <!-- <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p> -->
-                <p class="blog-post-meta">2013/12/23 by <a href="#">次郎</a></p>
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/18</span></td>
+            <td>レスポンシブWebデザインの実体</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/3.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(3,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(3,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(3,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(3,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-                <!-- <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p> -->
-                <p>吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも <a href="#">薄暗いじめじめした所</a>でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。この書生というのは時々我々を捕えて煮て食うという話である。</p>
-                <blockquote>
-                    <!-- <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p> -->
-                    <p>しかしその当時は何という考もなかったから別段恐しいとも思わなかった。ただ<strong>彼の掌に載せられてスーと持ち上げられた時</strong>何だかフワフワした感じがあったばかりである。</p>
-                </blockquote>
-                <!-- <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p> -->
-                <p>掌の上で少し落ちついて書生の顔を見たのがいわゆる人間というものの見始であろう。この時妙なものだと思った感じが今でも残っている。</p>
-                <!-- <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> -->
-                <p>第一毛をもって装飾されべきはずの顔がつるつるしてまるで薬缶だ。その後猫にもだいぶ逢ったがこんな片輪には一度も出会わした事がない。のみならず顔の真中があまりに突起している。そうしてその穴の中から時々ぷうぷうと煙を吹く。どうも咽せぽくて実に弱った。これが人間の飲む煙草というものである事はようやくこの頃知った。</p>
-            </div><!-- /.blog-post -->
+        <tr class=" visible-xs">
+            <td colspan="7">レスポンシブWebデザインの実体
+                <a class="btn btn-link pull-right " href="../webdir/3.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/18</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(3,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(3,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(3,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(3,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-            <div class="blog-post">
-                <!-- <h2 class="blog-post-title">New feature</h2> -->
-                <h2 class="blog-post-title">新しい特徴</h2>
-                <!-- <p class="blog-post-meta">December 14, 2013 by <a href="#">Chris</a></p> -->
-                <p class="blog-post-meta">2013/12/14 by <a href="#">三郎</a></p>
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/15</span></td>
+            <td>レスポンシブWebデザインの設定例：カラム幅</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/5.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(5,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(5,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(5,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(5,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-                <!-- <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p> -->
-                <p>吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。</p>
-                <ul>
-                    <!-- <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li> -->
-                    <li>この書生というのは時々我々を捕えて煮て食うという話である。</li>
-                    <!-- <li>Donec id elit non mi porta gravida at eget metus.</li> -->
-                    <li>しかしその当時は何という考もなかったから別段恐しいとも思わなかった。</li>
-                    <!-- <li>Nulla vitae elit libero, a pharetra augue.</li> -->
-                    <li>ただ彼の掌に載せられてスーと持ち上げられた時何だかフワフワした感じがあったばかりである。</li>
-                </ul>
-                <!-- <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p> -->
-                <p>掌の上で少し落ちついて書生の顔を見たのがいわゆる人間というものの見始であろう。この時妙なものだと思った感じが今でも残っている。</p>
-                <!-- <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p> -->
-                <p>第一毛をもって装飾されべきはずの顔がつるつるしてまるで薬缶だ。その後猫にもだいぶ逢ったがこんな片輪には一度も出会わした事がない。のみならず顔の真中があまりに突起している。そうしてその穴の中から時々ぷうぷうと煙を吹く。どうも咽せぽくて実に弱った。これが人間の飲む煙草というものである事はようやくこの頃知った。</p>
-            </div><!-- /.blog-post -->
+        <tr class=" visible-xs">
+            <td colspan="7">レスポンシブWebデザインの設定例：カラム幅
+                <a class="btn btn-link pull-right " href="../webdir/5.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/15</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(5,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(5,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(5,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(5,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-            <nav class="blog-pagination">
-                <!-- <a class="btn btn-outline-primary" href="#">Older</a> -->
-                <a class="btn btn-outline-primary" href="#">古い記事</a>
-                <!-- <a class="btn btn-outline-secondary disabled" href="#">Newer</a> -->
-                <a class="btn btn-outline-secondary disabled" href="#">新しい記事</a>
-            </nav>
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/15</span></td>
+            <td>レスポンシブWebデザインの設定例：ボタン表示</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/7.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(7,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(7,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(7,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(7,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-        </div><!-- /.blog-main -->
+        <tr class=" visible-xs">
+            <td colspan="7">レスポンシブWebデザインの設定例：ボタン表示
+                <a class="btn btn-link pull-right " href="../webdir/7.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/15</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(7,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(7,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(7,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(7,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-        <aside class="col-md-4 blog-sidebar">
-            <div class="p-3 mb-3 bg-light rounded">
-                <!-- <h4 class="font-italic">About</h4> -->
-                <h4 class="font-italic">ブログについて</h4>
-                <!-- <p class="mb-0">Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p> -->
-                <p class="mb-0">吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも<em>薄暗いじめじめした所で</em>ニャーニャー泣いていた事だけは記憶している。</p>
-            </div>
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/14</span></td>
+            <td>レスポンシブWebデザインの具体的な手法</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/2.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(2,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(2,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(2,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(2,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-            <div class="p-3">
-                <!-- <h4 class="font-italic">Archives</h4> -->
-                <h4 class="font-italic">アーカイブ</h4>
-                <ol class="list-unstyled mb-0">
-                    <!-- <li><a href="#">March 2014</a></li>
-                    <li><a href="#">February 2014</a></li>
-                    <li><a href="#">January 2014</a></li>
-                    <li><a href="#">December 2013</a></li>
-                    <li><a href="#">November 2013</a></li>
-                    <li><a href="#">October 2013</a></li>
-                    <li><a href="#">September 2013</a></li>
-                    <li><a href="#">August 2013</a></li>
-                    <li><a href="#">July 2013</a></li>
-                    <li><a href="#">June 2013</a></li>
-                    <li><a href="#">May 2013</a></li>
-                    <li><a href="#">April 2013</a></li> -->
-                    <li><a href="#">2014/03</a></li>
-                    <li><a href="#">2014/02</a></li>
-                    <li><a href="#">2014/01</a></li>
-                    <li><a href="#">2013/12</a></li>
-                    <li><a href="#">2013/11</a></li>
-                    <li><a href="#">2013/10</a></li>
-                    <li><a href="#">2013/09</a></li>
-                    <li><a href="#">2013/08</a></li>
-                    <li><a href="#">2013/07</a></li>
-                    <li><a href="#">2013/06</a></li>
-                    <li><a href="#">2013/05</a></li>
-                    <li><a href="#">2013/04</a></li>
-                </ol>
-            </div>
+        <tr class=" visible-xs">
+            <td colspan="7">レスポンシブWebデザインの具体的な手法
+                <a class="btn btn-link pull-right " href="../webdir/2.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/14</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(2,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(2,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(2,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(2,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-            <div class="p-3">
-                <!-- <h4 class="font-italic">Elsewhere</h4> -->
-                <h4 class="font-italic">SNS</h4>
-                <ol class="list-unstyled">
-                    <li><a href="#">GitHub</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Facebook</a></li>
-                </ol>
-            </div>
-        </aside><!-- /.blog-sidebar -->
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/13</span></td>
+            <td>Bootstrapの画像表示機能</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/1.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(1,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(1,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(1,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(1,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
 
-    </div><!-- /.row -->
+        <tr class=" visible-xs">
+            <td colspan="7">Bootstrapの画像表示機能
+                <a class="btn btn-link pull-right " href="../webdir/1.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/13</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(1,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(1,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(1,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(1,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/13</span></td>
+            <td>Bootstrapのその他の便利な機能</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/6.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(6,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(6,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(6,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(6,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" visible-xs">
+            <td colspan="7">Bootstrapのその他の便利な機能
+                <a class="btn btn-link pull-right " href="../webdir/6.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/13</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(6,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(6,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(6,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(6,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2014/</span>03/03</span></td>
+            <td>Bootstarpを使ったページネーション（前後移動リンク）のカスタマイズ</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/12.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(12,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(12,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(12,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(12,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" visible-xs">
+            <td colspan="7">Bootstarpを使ったページネーション（前後移動リンク）のカスタマイズ
+                <a class="btn btn-link pull-right " href="../webdir/12.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/03</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(12,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(12,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(12,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(12,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2014/</span>03/03</span></td>
+            <td>Bootstrapのクラスによる全一覧（目次）のページネーションデザインの変更</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/13.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(13,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(13,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(13,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(13,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" visible-xs">
+            <td colspan="7">Bootstrapのクラスによる全一覧（目次）のページネーションデザインの変更
+                <a class="btn btn-link pull-right " href="../webdir/13.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/03</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(13,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(13,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(13,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(13,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" hidden-xs">
+            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/10</span></td>
+            <td>サイトのCSSでBootstrapのスタイルを上書きする方法</td>
+            <td class="center"><a class="btn btn-link" href="../webdir/8.html" target="check"><i class="glyphicon glyphicon-check"></i><span class=" visible-md-inline visible-lg-inline"> チェック</span></a></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(8,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(8,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(8,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(8,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+        <tr class=" visible-xs">
+            <td colspan="7">サイトのCSSでBootstrapのスタイルを上書きする方法
+                <a class="btn btn-link pull-right " href="../webdir/8.html" target="check"><i class="glyphicon glyphicon-check"></i></a></td>
+        </tr>
+        <tr class=" phone-last visible-xs">
+            <td colspan="3"><span class="nowrap">03/10</span></td>
+            <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(8,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+編集</span></button></td>
+            <td class="center"><button class="btn  btn-danger  btn-sm" onclick="set_param(8,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+削除</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(8,3,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-up"></i><span class=" visible-md-inline visible-lg-inline">
+上へ</span></button></td>
+            <td class="center"><button class="btn  btn-default btn-sm" onclick="set_param(8,4,4,0)" type="submit"><i class="glyphicon glyphicon-arrow-down"></i><span class=" visible-md-inline visible-lg-inline">
+下へ</span></button>
+            </td></tr>
+
+
+        </tbody>
+
+    </table>
 
 </main>
 <footer class="blog-footer">

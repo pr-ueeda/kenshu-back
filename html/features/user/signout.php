@@ -18,7 +18,7 @@ $_SESSION = array();
 </head>
 <body>
 <ul>
-    <li><a href="html/index.php">トップページへ</a></li>
+    <li><a href="../../index.php">トップページへ</a></li>
 </ul>
 </body>
 </html>

@@ -5,29 +5,14 @@ require_once 'model.php';
 use PDO;
 
 class users extends model {
-    private $table_name = 'users';
+    private $users_table = 'users';
 
     public function __construct() {
         parent::__construct();
     }
 
-    public function getAll():array {
-        $sql = <<< EOF
-SELECT * FROM ($this->table_name)
-EOF;
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll();
-        } catch (\Exception $e) {
-            echo $e;
-        }
-
-        return $rs;
-    }
-
-    public function signin(string $email_address, $password) {
-        $sql = "SELECT * FROM {$this->table_name} WHERE email_address = ?";
+    public function signin(string $email_address, string $password) {
+        $sql = "SELECT * FROM {$this->users_table} WHERE email_address = ?";
 
         try {
             $stmt = $this->pdo->prepare($sql);
@@ -36,14 +21,9 @@ EOF;
             if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 session_regenerate_id(true);
                 if ($password == $row['pass']) {
-                    $email_address = $row['email_address'];
-                    $sql = "SELECT * FROM {$this->table_name} WHERE email_address = $email_address";
-                    $stmt = $this->pdo->query($sql);
-                    foreach ($stmt as $row) {
-                        $row['display_name'];
-                    }
                     $_SESSION['display_name'] = $row['display_name'];
-                    header("Location: ../index.php");
+                    $_SESSION['user_id'] = $row['user_id'];
+                    header("Location: ../../index.php");
                     exit();
                 } else {
                     echo '~ログインに失敗しました。';
@@ -51,13 +31,14 @@ EOF;
             } else {
                 echo '~ログインに失敗しました。';
             }
+
         } catch (\Exception $e) {
             echo $e;
         }
     }
 
     public function signup(string $display_name, string $email_address, string $password) {
-        $sql = "INSERT INTO {$this->table_name} (display_name ,email_address, pass) VALUES (? ,?, ?)";
+        $sql = "INSERT INTO {$this->users_table} (display_name ,email_address, pass) VALUES (? ,?, ?)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
