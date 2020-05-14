@@ -1,7 +1,7 @@
 <?php
 use app\model\users;
 
-require_once '../../app/models/users.php';
+require_once '../../../app/models/users.php';
 
 session_start();
 

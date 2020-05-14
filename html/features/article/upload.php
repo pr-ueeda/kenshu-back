@@ -3,7 +3,7 @@ use app\model\articles;
 
 require_once '../../../app/models/articles.php';
 
-$file_dir = '/var/www/html/public/images/';
+$file_dir = '/var/www/html/images/';
 $articles = new articles();
 
 if (is_uploaded_file($_FILES['file_up']['tmp_name'])) {

@@ -4,6 +4,7 @@ services:
   app:
     build: ./config
     volumes:
+      - ./app:/var/www/app
       - ./html:/var/www/html
     ports:
       - 8000:80
