@@ -16,4 +16,3 @@ if (is_uploaded_file($_FILES['file_up']['tmp_name'])) {
 } else {
     echo 'ファイルをアップロードできませんでした。';
 }
-
