@@ -3,7 +3,7 @@ namespace app\model;
 
 use PDO;
 
-class model {
+class Model {
     public $pdo;
 
     public function __construct() {

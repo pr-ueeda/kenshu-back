@@ -46,7 +46,7 @@ if (isset($_POST['posts'])) {
     <input type="text" id="title" name="title" class="form-control" placeholder="タイトル"><br>
     <label>本文</label>
     <textarea id="body" name="body" class="form-control" rows="50" cols="80" placeholder="本文をここに入力"></textarea>
-    <input type="text" id="body" name="body" class="form-control" placeholder="本文"><br>
+    <button name="posts" id="posts" type="submit" class="btn btn-info">投稿</button>
 </form>
 <form id="upload_form">
     <label>画像アップロード</label>
