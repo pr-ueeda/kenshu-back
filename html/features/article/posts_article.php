@@ -9,8 +9,8 @@ if (isset($_POST['posts'])) {
     $title = $_POST['title'];
     $body = $_POST['body'];
 
-    $articles = new articles();
-    $articles->insert_article($title, $body);
+    $article = new articles();
+    $article->insert_article($title, $body);
 }
 
 ?>

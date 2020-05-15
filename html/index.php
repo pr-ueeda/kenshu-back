@@ -30,16 +30,16 @@ if (isset($_POST['signout'])) {
                 <a class="blog-header-logo text-dark" href="#">記事投稿サイト</a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="text-success" href="features/user/mypage.php"><?php echo $_SESSION['user_id'] ?></a>
+                <a class="text-success" href="features/user/mypage.php"><?php echo $_SESSION['display_name'] ?></a>
                 <div class="col-4 pt-1">
                     <?php if ($_SESSION['display_name'] != '') :?>
-                    <a class="text-muted" href="features/article/article_post.php">記事投稿</a>
+                    <a class="text-muted" href="features/article/posts_article.php">記事投稿</a>
                     <form class="" method="post">
                         <button name="signout" id="signout" type="submit" class="btn btn-info">ログアウト</button>
                     </form>
                     <?php else : ?>
                     <a class="col-4 text-muted" href="features/user/signin.php">ログイン</a>
-                    <a class="btn btn-sm btn-outline-secondary" href="/signup/signup.php">サインアップ</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="features/user/signup.php">サインアップ</a>
                     <?php endif; ?>
                 </div>
             </div>

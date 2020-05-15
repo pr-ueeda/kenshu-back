@@ -13,12 +13,14 @@ class articles extends Model {
     private $tags_table = 'tags';
     private $article_tags_table = 'article_tags';
     private $thumbnails_table = 'thumbnails';
+    private $user_id = 'users.user_id';
+    private $article_id = 'articles.article_id';
 
     public function __construct() {
         parent::__construct();
     }
 
-    public function get_all() {
+    public function get_all(): array {
         $sql = "SELECT * FROM {$this->users_table}
         INNER JOIN {$this->user_articles_table}
         ON {$this->user_articles_table}.id = {$this->users_table}.article_id
@@ -36,9 +38,34 @@ class articles extends Model {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            var_dump($data);
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
+
+        return $data;
+    }
+
+    public function get_title(): array {
+        $session_user_id = $_SESSION['user_id'];
+
+        $sql = "SELECT {$this->articles_table}.title, {$this->articles_table}.article_id FROM {$this->articles_table}
+        INNER JOIN {$this->user_articles_table}
+        ON {$this->user_articles_table}.article_id = {$this->articles_table}.article_id
+        INNER JOIN {$this->users_table}
+        ON {$this->users_table}.user_id = {$this->user_articles_table}.user_id
+        WHERE {$this->users_table}.user_id IN ($session_user_id)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+
+        return $row;
     }
 
     public function insert_article(string $title, string $body) {
@@ -102,6 +129,18 @@ class articles extends Model {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array($article_id, $image_id));
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+    }
+
+    public function delete(string $article_id) {
+        $sql = "DELETE FROM {$this->articles_table} WHERE article_id = ?";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array($article_id));
+
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
