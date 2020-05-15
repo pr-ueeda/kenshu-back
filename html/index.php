@@ -30,7 +30,7 @@ if (isset($_POST['signout'])) {
                 <a class="blog-header-logo text-dark" href="#">記事投稿サイト</a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-                <strong class="text-success"><?php echo $_SESSION['user_id'] ?></strong>
+                <a class="text-success" href="features/user/mypage.php"><?php echo $_SESSION['user_id'] ?></a>
                 <div class="col-4 pt-1">
                     <?php if ($_SESSION['display_name'] != '') :?>
                     <a class="text-muted" href="features/article/article_post.php">記事投稿</a>

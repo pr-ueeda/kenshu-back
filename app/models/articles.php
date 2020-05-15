@@ -4,7 +4,7 @@ namespace app\model;
 require_once 'model.php';
 use PDO;
 
-class articles extends model {
+class articles extends Model {
     private $users_table = 'users';
     private $articles_table = 'articles';
     private $user_articles_table = 'user_articles';
@@ -41,36 +41,46 @@ class articles extends model {
         }
     }
 
-    public function get_images() {
-        $sql = "SELECT image_url FROM {$this->images_table}";
-
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo $row['file_name'];
-            }
-        } catch (\Exception $e) {
-            exit($e->getMessage());
-        }
-    }
-
     public function insert_article(string $title, string $body) {
         $sql = "INSERT INTO {$this->articles_table} (title ,body) VALUES (? ,?)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array($title, $body));
-            $last_insert_article_id = $this->pdo->lastInsertId('article_id');
+            $article_id = $this->pdo->lastInsertId('article_id');
 
-            $this->insert_user_articles($last_insert_article_id);
-            // todo: article_imagesテーブルにarticle_idとimage_idを入れる
-
+            $this->insert_user_articles($article_id);
+            $this->insert_article_images($article_id, $_SESSION['image_id']);
+            $this->insert_thumbnail($article_id, $_SESSION['image_id']);
             header('Location: ../user/mypage.php');
             exit();
         } catch (\Exception $e) {
             echo $e;
+        }
+    }
+
+    public function insert_image(string $image_url) {
+        $sql = "INSERT INTO {$this->images_table} (image_url) VALUES (?)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array($image_url));
+
+            $image_id = $this->pdo->lastInsertId('image_id');
+            $_SESSION['image_id'] = $image_id;
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+    }
+
+    public function insert_thumbnail(int $article_id, int $image_id) {
+        $sql = "INSERT INTO {$this->thumbnails_table} (article_id, image_id) VALUES (?, ?)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array($article_id, $image_id));
+        } catch (\Exception $e) {
+            exit($e->getMessage());
         }
     }
 
@@ -86,16 +96,14 @@ class articles extends model {
         }
     }
 
-    public function insert_image(string $image_url) {
-        $sql = "INSERT INTO {$this->images_table} (image_url) VALUES (?)";
+    private function insert_article_images(int $article_id, int $image_id) {
+        $sql = "INSERT INTO {$this->article_images_table} (article_id, image_id) VALUES (?, ?)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($image_url));
-
-            $last_insert_image_id = $this->pdo->lastInsertId('image_id');
+            $stmt->execute(array($article_id, $image_id));
         } catch (\Exception $e) {
-            echo $e;
+            exit($e->getMessage());
         }
     }
 }
