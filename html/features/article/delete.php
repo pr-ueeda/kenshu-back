@@ -5,8 +5,6 @@ require_once '../../../app/models/articles.php';
 
 session_start();
 
-// todo: 画像削除処理
-
 $article_id = $_POST['delete'];
 $article = new articles();
 if (!empty($article_id)) {
