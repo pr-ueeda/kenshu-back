@@ -18,13 +18,37 @@ class articles extends Model {
         parent::__construct();
     }
 
-    public function get_all(int $article_id): array {
+    public function get_all() {
+        $sql = "SELECT * FROM {$this->users_table}
+        INNER JOIN {$this->user_articles_table}
+        ON {$this->user_articles_table}.user_id = {$this->users_table}.user_id
+        INNER JOIN {$this->articles_table}
+        ON {$this->articles_table}.article_id = {$this->user_articles_table}.article_id
+        INNER JOIN {$this->article_images_table}
+        ON {$this->article_images_table}.article_id = {$this->articles_table}.article_id
+        INNER JOIN {$this->images_table}
+        ON {$this->images_table}.image_id = {$this->article_images_table}.image_id
+        INNER JOIN {$this->thumbnails_table}
+        ON {$this->thumbnails_table}.image_id = {$this->images_table}.image_id";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array());
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+
+        return $result;
+    }
+
+    public function get_user_article(int $article_id): array {
         $sql = "SELECT * FROM {$this->articles_table}
         INNER JOIN {$this->article_images_table}
         ON {$this->article_images_table}.article_id = {$this->articles_table}.article_id
         INNER JOIN {$this->thumbnails_table}
         ON {$this->thumbnails_table}.article_id = {$this->articles_table}.article_id
-        WHERE {$this->articles_table}.article_id IN ($article_id)";
+        WHERE {$this->articles_table}.article_id IN (?)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
@@ -60,7 +84,6 @@ class articles extends Model {
 
     public function insert_article(string $title, string $body) {
         $sql = "INSERT INTO {$this->articles_table} (title, body) VALUES (? ,?)";
-
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array($title, $body));

@@ -16,7 +16,7 @@ if (isset($_POST['update'])) {
     $article->update($title, $body, $article_id);
 }
 
-$rows = $article->get_all($article_id);
+$rows = $article->get_user_article($article_id);
 
 ?>
 
