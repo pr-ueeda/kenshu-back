@@ -1,7 +1,7 @@
 <?php
-use app\model\users;
+use app\model\user;
 
-require_once '../../../app/models/users.php';
+require_once '../../../app/models/user.php';
 
 session_start();
 
@@ -12,7 +12,7 @@ if (isset($_POST['add'])) {
     $email_address = $_POST['email_address'];
     $password = $_POST['password'];
 
-    $users = new users();
+    $users = new user();
     $users->signup($display_name, $email_address, $password);
 
     $signup_message = '登録完了' . $email_address . $password . 'user名' . $display_name;

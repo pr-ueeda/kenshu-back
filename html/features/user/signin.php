@@ -1,7 +1,7 @@
 <?php
-use app\model\users;
+use app\model\user;
 
-require_once '../../../app/models/users.php';
+require_once '../../../app/models/user.php';
 
 session_start();
 
@@ -11,10 +11,12 @@ if (isset($_POST['signin'])) {
     $email_address = $_POST['email_address'];
     $password = $_POST['password'];
 
-    $users = new users();
-    $users->signin($email_address, $password);
+    $user = new user();
+    $user->signin($email_address, $password);
 
-    $signin_message = 'ログインしました。' . 'user名' . $signin_message;
+    if ($user === true) {
+        $signin_message = 'ログインしました。' . 'user名' . $_SESSION['display_name'];
+    }
 }
 ?>
 <!DOCTYPE>

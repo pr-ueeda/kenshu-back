@@ -9,7 +9,7 @@ if (isset($_SESSION['display_name'])) {
 
 $_SESSION = array();
 
-@session_destroy();
+session_destroy();
 
 ?>
 <!DOCTYPE>

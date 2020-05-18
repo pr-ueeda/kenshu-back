@@ -4,7 +4,7 @@ namespace app\model;
 require_once 'model.php';
 use PDO;
 
-class users extends model {
+class user extends Model {
     private $users_table = 'users';
 
     public function __construct() {
@@ -26,7 +26,7 @@ class users extends model {
                     header("Location: ../../index.php");
                     exit();
                 } else {
-                    echo '~ログインに失敗しました。';
+                    echo 'パスワードが違います。';
                 }
             } else {
                 echo '~ログインに失敗しました。';
@@ -42,10 +42,9 @@ class users extends model {
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            //$stmt->bindParam(':password',$param['password'],PDO::PARAM_STR);
             $stmt->execute(array($display_name, $email_address, $password));
             $_SESSION['display_name'] = $display_name;
-            header("Location: ../index.php");
+            header("Location: ../../index.php");
             exit();
         } catch (\Exception $e) {
             echo $e;

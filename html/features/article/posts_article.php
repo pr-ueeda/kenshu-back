@@ -4,13 +4,13 @@ use app\model\articles;
 require_once '../../../app/models/articles.php';
 
 session_start();
+$article = new articles();
 
 if (isset($_POST['posts'])) {
     $title = $_POST['title'];
     $body = $_POST['body'];
 
-    $articles = new articles();
-    $articles->insert_article($title, $body);
+    $article->insert_article($title, $body);
 }
 
 ?>
