@@ -7,12 +7,12 @@ session_start();
 
 // todo: 画像削除処理
 
-$article_id = (int)$_POST['delete'];
+$article_id = $_POST['delete'];
 $article = new articles();
 if (!empty($article_id)) {
     $article->delete($article_id);
     echo "削除しました。";
-} else if (empty($article_id)) {
+} else {
     echo "削除に失敗しました。";
 }
 

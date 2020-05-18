@@ -38,13 +38,13 @@ class articles extends Model {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            var_dump($data);
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            var_dump($row);
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
 
-        return $data;
+        return $row;
     }
 
     public function get_title(): array {
@@ -134,13 +134,13 @@ class articles extends Model {
         }
     }
 
-    public function delete(string $article_id) {
+    public function delete(int $article_id) {
         $sql = "DELETE FROM {$this->articles_table} WHERE article_id = ?";
 
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array($article_id));
-
+            var_dump($stmt->errorInfo());
         } catch (\Exception $e) {
             exit($e->getMessage());
         }

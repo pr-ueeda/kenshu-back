@@ -25,7 +25,6 @@ $data = $articles->get_title();
     <table class="table table-hover table-condensed settinglist">
         <thead>
         <tr class=" hidden-xs">
-            <th class="center">日付</th>
             <th>タイトル</th>
             <th class="center">編集</th>
             <th class="center">削除</th>
@@ -34,14 +33,13 @@ $data = $articles->get_title();
         <tbody>
         <tr class=" hidden-xs">
             <?php foreach ($data as $datum) { ?>
-            <td><span class="nowrap"><span class=" hidden-xs">2013/</span>03/20</span></td>
             <td><?php echo htmlspecialchars($datum['title'])?></td>
-            <form>
-                <td class="center"><button class="btn  btn-primary  btn-sm" onclick="set_param(4,1,2,0)" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+            <form method="post" action="/features/article/posts_article.php">
+                <td class="center"><button class="btn  btn-primary  btn-sm" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
 編集</span></button></td>
             </form>
             <form method="post" action="/features/article/delete.php">
-                <td class="center"><button name="delete" id="delete" value="<?=$datum['article_id'] ?>" class="btn  btn-danger  btn-sm" onclick="set_param(4,2,3,0)" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+                <td class="center"><button name="delete" id="delete" value="<?=$datum['article_id'] ?>" class="btn  btn-danger  btn-sm" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
 削除</span></button></td>
             </form>
             </td>
