@@ -1,17 +1,22 @@
 <?php
+
 use app\model\articles;
 
 require_once '../../../app/models/articles.php';
 
 session_start();
-$article = new articles();
 
-if (isset($_POST['posts'])) {
+$article = new articles();
+$article_id = (int)$_SESSION['article_id'];
+
+if (isset($_POST['update'])) {
     $title = $_POST['title'];
     $body = $_POST['body'];
 
-    $article->insert_article($title, $body);
+    $article->update($title, $body, $article_id);
 }
+
+$rows = $article->get_all($article_id);
 
 ?>
 
@@ -25,7 +30,7 @@ if (isset($_POST['posts'])) {
 <body>
 <script>
     function upload_file() {
-        var formdata = new FormData($('#upload_form').get(0))
+        var formdata = new FormData($('#upload_form').get(0));
 
         $.ajax({
             url  : "/features/article/upload.php",
@@ -43,10 +48,12 @@ if (isset($_POST['posts'])) {
 
 <form method="post">
     <label>題名</label>
-    <input type="text" id="title" name="title" class="form-control" placeholder="タイトル"><br>
-    <label>本文</label>
-    <textarea id="body" name="body" class="form-control" rows="50" cols="80" placeholder="本文をここに入力"></textarea>
-    <button name="posts" id="posts" type="submit" class="btn btn-info">投稿</button>
+    <?php foreach ($rows as $row) { ?>
+        <input type="text" id="title" name="title" class="form-control" placeholder="タイトル" value="<?=$row['title'] ?>"><br>
+        <label>本文</label>
+        <textarea id="body" name="body" class="form-control" rows="50" cols="80" placeholder="本文をここに入力"><?=$row['body'] ?></textarea>
+    <?php } ?>
+    <button name="update" id="update" type="submit" class="btn btn-info">更新</button>
 </form>
 <form id="upload_form">
     <label>画像アップロード</label>

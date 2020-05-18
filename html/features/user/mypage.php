@@ -6,7 +6,7 @@ require_once '../../../app/models/articles.php';
 session_start();
 
 $articles = new articles();
-$data = $articles->get_title();
+$rows = $articles->get_meta();
 
 ?>
 <!DOCTYPE>
@@ -32,14 +32,14 @@ $data = $articles->get_title();
         </thead>
         <tbody>
         <tr class=" hidden-xs">
-            <?php foreach ($data as $datum) { ?>
-            <td><?php echo htmlspecialchars($datum['title'])?></td>
-            <form method="post" action="/features/article/posts_article.php">
-                <td class="center"><button class="btn  btn-primary  btn-sm" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
+            <?php foreach ($rows as $row) { $_SESSION['article_id'] = $row['article_id'] ?>
+            <td><?php echo htmlspecialchars($row['title'])?></td>
+            <form method="post" action="/features/article/edit.php">
+                <td class="center"><button name="edit" id="edit" value="<?=$row['article_id'] ?>" class="btn  btn-primary  btn-sm" type="submit"><i class="glyphicon glyphicon-pencil"></i><span class=" visible-md-inline visible-lg-inline">
 編集</span></button></td>
             </form>
             <form method="post" action="/features/article/delete.php">
-                <td class="center"><button name="delete" id="delete" value="<?=$datum['article_id'] ?>" class="btn  btn-danger  btn-sm" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
+                <td class="center"><button name="delete" id="delete" value="<?=$row['article_id'] ?>" class="btn  btn-danger  btn-sm" type="submit"><i class="glyphicon glyphicon-trash"></i><span class=" visible-md-inline visible-lg-inline">
 削除</span></button></td>
             </form>
             </td>
