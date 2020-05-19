@@ -3,6 +3,7 @@ namespace app\model;
 
 require_once 'model.php';
 use PDO;
+use const http\Client\Curl\PROXY_SOCKS4;
 
 class articles extends Model {
     private $users_table = 'users';
@@ -33,7 +34,7 @@ class articles extends Model {
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array());
+            $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             exit($e->getMessage());
@@ -52,11 +53,12 @@ class articles extends Model {
         ON {$this->article_tags_table}.article_id = {$this->articles_table}.article_id
         INNER JOIN {$this->tags_table}
         ON {$this->tags_table}.tag_id = {$this->article_tags_table}.tag_id
-        WHERE {$this->articles_table}.article_id IN (?)";
+        WHERE {$this->articles_table}.article_id IN (:article_id)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($article_id));
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             exit($e->getMessage());
@@ -87,7 +89,7 @@ class articles extends Model {
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array());
+            $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             exit($e->getMessage());
@@ -118,10 +120,12 @@ class articles extends Model {
     }
 
     public function insert_article(string $title, string $body) {
-        $sql = "INSERT INTO {$this->articles_table} (title, body) VALUES (? ,?)";
+        $sql = "INSERT INTO {$this->articles_table} (title, body) VALUES (:title,:body)";
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($title, $body));
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR, 100);
+            $stmt->bindParam(':body', $body, PDO::PARAM_STR);
+            $stmt->execute();
             $article_id = $this->pdo->lastInsertId('article_id');
 
             $this->insert_user_articles($article_id);
@@ -136,11 +140,12 @@ class articles extends Model {
     }
 
     public function insert_image(string $image_url) {
-        $sql = "INSERT INTO {$this->images_table} (image_url) VALUES (?)";
+        $sql = "INSERT INTO {$this->images_table} (image_url) VALUES (:image_url)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($image_url));
+            $stmt->bindParam(':image_url', $image_url, PDO::PARAM_STR);
+            $stmt->execute();
 
             $image_id = $this->pdo->lastInsertId('image_id');
             $_SESSION['image_id'] = $image_id;
@@ -150,21 +155,24 @@ class articles extends Model {
     }
 
     public function insert_thumbnail(int $article_id, int $image_id) {
-        $sql = "INSERT INTO {$this->thumbnails_table} (article_id, image_id) VALUES (?, ?)";
+        $sql = "INSERT INTO {$this->thumbnails_table} (article_id, image_id) VALUES (:article_id, :image_id)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($article_id, $image_id));
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->bindParam(':image_id', $image_id, PDO::PARAM_INT);
+            $stmt->execute();
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
     }
 
     public function insert_tag(string $tag_name) {
-        $sql = "INSERT INTO {$this->tags_table} (tag_name) VALUES (?)";
+        $sql = "INSERT INTO {$this->tags_table} (tag_name) VALUES (:tag_name)";
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($tag_name));
+            $stmt->bindParam(':tag_name', $tag_name, PDO::PARAM_STR, 30);
+            $stmt->execute();
             $tag_id = $this->pdo->lastInsertId('tag_id');
             $_SESSION['tag_id'] = $tag_id;
         } catch (\Exception $e) {
@@ -173,34 +181,40 @@ class articles extends Model {
     }
 
     private function insert_user_articles(int $article_id) {
-        $sql = "INSERT INTO {$this->user_articles_table} (user_id, article_id) VALUES (?, ?)";
+        $sql = "INSERT INTO {$this->user_articles_table} (user_id, article_id) VALUES (:user_id, :article_id)";
         $session_user_id = $_SESSION['user_id'];
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($session_user_id, $article_id));
+            $stmt->bindParam(':user_id', $session_user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->execute();
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
     }
 
     private function insert_article_images(int $article_id, int $image_id) {
-        $sql = "INSERT INTO {$this->article_images_table} (article_id, image_id) VALUES (?, ?)";
+        $sql = "INSERT INTO {$this->article_images_table} (article_id, image_id) VALUES (:article_id, :image_id)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($article_id, $image_id));
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->bindParam(':image_id', $image_id, PDO::PARAM_INT);
+            $stmt->execute();
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
     }
 
     private function insert_article_tags(int $article_id, int $tag_id) {
-        $sql = "INSERT INTO {$this->article_tags_table} (article_id, tag_id) VALUES (?, ?)";
+        $sql = "INSERT INTO {$this->article_tags_table} (article_id, tag_id) VALUES (:article_id, :tag_id)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($article_id, $tag_id));
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->bindParam(':tag_id', $tag_id, PDO::PARAM_INT);
+            $stmt->execute();
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
@@ -208,12 +222,15 @@ class articles extends Model {
 
     public function update(string $title, string $body, int $article_id) {
         $sql = "UPDATE {$this->articles_table}
-        SET title = ?, body = ?
-        WHERE article_id = ?";
+        SET title = :title, body = :body
+        WHERE article_id = :article_id";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($title, $body, $article_id));
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR, 100);
+            $stmt->bindParam(':body', $body, PDO::PARAM_STR);
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->execute();
             header('Location: ../user/mypage.php');
         } catch (\Exception $e) {
             exit($e->getMessage());
@@ -221,16 +238,14 @@ class articles extends Model {
     }
 
     public function delete(int $article_id) {
-        $sql = "DELETE FROM {$this->articles_table} WHERE article_id = ?";
+        $sql = "DELETE FROM {$this->articles_table} WHERE article_id = :article_id";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($article_id));
-            var_dump($stmt->errorInfo());
+            $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+            $stmt->execute();
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
     }
-
-
 }

@@ -12,11 +12,12 @@ class user extends Model {
     }
 
     public function signin(string $email_address, string $password) {
-        $sql = "SELECT * FROM {$this->users_table} WHERE email_address = ?";
+        $sql = "SELECT * FROM {$this->users_table} WHERE email_address = :email_address";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($email_address));
+            $stmt->bindParam(':email_address', $email_address, PDO::PARAM_INT);
+            $stmt->execute();
 
             if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 session_regenerate_id(true);
@@ -38,11 +39,14 @@ class user extends Model {
     }
 
     public function signup(string $display_name, string $email_address, string $password) {
-        $sql = "INSERT INTO {$this->users_table} (display_name ,email_address, pass) VALUES (? ,?, ?)";
+        $sql = "INSERT INTO {$this->users_table} (display_name ,email_address, pass) VALUES (:display_name, :email_address, :password)";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(array($display_name, $email_address, $password));
+            $stmt->bindParam(':display_name', $display_name, PDO::PARAM_STR, 8);
+            $stmt->bindParam(':email_address', $email_address, PDO::PARAM_STR, 100);
+            $stmt->bindParam(':password', $password, PDO::PARAM_STR, 100);
+            $stmt->execute();
             $_SESSION['display_name'] = $display_name;
             header("Location: ../../index.php");
             exit();

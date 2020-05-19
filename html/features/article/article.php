@@ -8,7 +8,6 @@ $_SESSION['article_id'] = $_POST['read'];
 
 $articles = new articles();
 $rows = $articles->get_article();
-var_dump($rows);
 ?>
 
 <!DOCTYPE>

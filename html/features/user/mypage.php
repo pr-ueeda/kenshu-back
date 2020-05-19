@@ -19,7 +19,7 @@ $rows = $articles->get_meta();
 <body>
 <div class="container">
     <p class="center">マイページ</p>
-    <a class="text-muted" href="/index.php">トップへ</a>
+    <a href="/index.php">トップへ</a>
 </div>
 <main role="main" class="container">
     <table class="table table-hover table-condensed settinglist">

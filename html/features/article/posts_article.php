@@ -7,18 +7,23 @@ session_start();
 $article = new articles();
 
 if (isset($_POST['posts'])) {
-    $title = $_POST['title'];
-    $body = $_POST['body'];
-    $tag_name = $_POST['tag'];
+    if ($_POST['title'] === '') {
+        $error_title = "タイトルが未入力です。";
+    } else if($_POST['body'] === '') {
+        $error_body = "本文が未入力です。";
+    } else {
+        $title = $_POST['title'];
+        $body = $_POST['body'];
+        $tag_name = $_POST['tag'];
 
-    if ($tag_name != '') {
-        $tags = explode('#', $tag_name);
-        foreach ($tags as $tag) {
-            $article->insert_tag($tag);
+        if ($tag_name != '') {
+            $tags = explode('#', $tag_name);
+            foreach ($tags as $tag) {
+                $article->insert_tag($tag);
+            }
         }
+        $article->insert_article($title, $body);
     }
-
-    $article->insert_article($title, $body);
 }
 
 ?>
@@ -26,9 +31,8 @@ if (isset($_POST['posts'])) {
 <!DOCTYPE>
 <html lang="ja">
 <head>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="blog.css" rel="stylesheet">
-    <link href="../example.css" rel="stylesheet">
 </head>
 <body>
 <script>
@@ -48,38 +52,25 @@ if (isset($_POST['posts'])) {
         });
     }
 </script>
-
-<form method="post">
-    <label>題名</label>
-    <input type="text" id="title" name="title" class="form-control" placeholder="タイトル"><br>
-    <label>タグ</label>
-    <input type="text" id="tag" name="tag" class="form-control" placeholder="#から始めて、単語をスペースで区切って入力"><br>
-    <button name="add_tag" id="add_tag" type="submit" class="btn btn-info">タグを登録</button>
-    <label>本文</label>
-    <textarea id="body" name="body" class="form-control" rows="50" cols="80" placeholder="本文をここに入力"></textarea>
-    <button name="posts" id="posts" type="submit" class="btn btn-info">投稿</button>
-</form>
-<form id="upload_form">
-    <label>画像アップロード</label>
-    <input type="file" name="file_up">
-    <button type="button" onclick="upload_file()">アップロード</button>
-</form>
-<div class="uploaded_images"></div>
-<script src="/assets/js/vendor/holder.min.js"></script>
-<script>
-    Holder.addTheme('thumb', {
-        bg: '#55595c',
-        fg: '#eceeef',
-        text: 'Thumbnail'
-    });
-</script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
-<script src="/docs/4.4/assets/js/vendor/anchor.min.js"></script>
-<script src="/docs/4.4/assets/js/vendor/clipboard.min.js"></script>
-<script src="/docs/4.4/assets/js/vendor/bs-custom-file-input.min.js"></script>
-<script src="/docs/4.4/assets/js/src/application.js"></script>
-<script src="/docs/4.4/assets/js/src/search.js"></script>
-<script src="/docs/4.4/assets/js/src/ie-emulation-modes-warning.js"></script>
-<script charset="utf-8" src="../webdir/parts/js/admin.js" type="text/javascript"></script>
+<div class="container">
+    <form method="post">
+        <a href="/index.php">戻る</a><br>
+        <label>題名</label>
+        <input type="text" id="title" name="title" class="form-control" placeholder="タイトル">
+        <div><?php echo $error_title?></div><br>
+        <label>タグ</label>
+        <input type="text" id="tag" name="tag" class="form-control" placeholder="#から始めて、単語をスペースで区切って入力"><br>
+        <label>本文</label>
+        <textarea id="body" name="body" class="form-control" rows="50" cols="80" placeholder="本文をここに入力"></textarea>
+        <div><?php echo $error_body?></div><br>
+        <button name="posts" id="posts" type="submit" class="btn btn-info">投稿</button>
+    </form>
+    <form id="upload_form">
+        <label>画像アップロード</label>
+        <input type="file" name="file_up">
+        <button type="button" onclick="upload_file()">アップロード</button>
+    </form>
+    <div class="uploaded_images"></div>
+</div>
 </body>
 </html>
