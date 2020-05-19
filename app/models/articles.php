@@ -18,7 +18,7 @@ class articles extends Model {
         parent::__construct();
     }
 
-    public function get_all() {
+    public function get_articles() {
         $sql = "SELECT * FROM {$this->users_table}
         INNER JOIN {$this->user_articles_table}
         ON {$this->user_articles_table}.user_id = {$this->users_table}.user_id
@@ -48,6 +48,10 @@ class articles extends Model {
         ON {$this->article_images_table}.article_id = {$this->articles_table}.article_id
         INNER JOIN {$this->thumbnails_table}
         ON {$this->thumbnails_table}.article_id = {$this->articles_table}.article_id
+        INNER JOIN {$this->article_tags_table}
+        ON {$this->article_tags_table}.article_id = {$this->articles_table}.article_id
+        INNER JOIN {$this->tags_table}
+        ON {$this->tags_table}.tag_id = {$this->article_tags_table}.tag_id
         WHERE {$this->articles_table}.article_id IN (?)";
 
         try {
@@ -75,6 +79,10 @@ class articles extends Model {
         ON {$this->images_table}.image_id = {$this->article_images_table}.image_id
         INNER JOIN {$this->thumbnails_table}
         ON {$this->thumbnails_table}.image_id = {$this->images_table}.image_id
+        INNER JOIN {$this->article_tags_table}
+        ON {$this->article_tags_table}.article_id = {$this->articles_table}.article_id
+        INNER JOIN {$this->tags_table}
+        ON {$this->tags_table}.tag_id = {$this->article_tags_table}.tag_id
         WHERE {$this->articles_table}.article_id = ($session_article_id)";
 
         try {

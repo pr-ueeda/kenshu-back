@@ -12,7 +12,7 @@ if (isset($_POST['signout'])) {
 }
 
 $article = new articles();
-$rows = $article->get_all();
+$rows = $article->get_articles();
 
 ?>
 
