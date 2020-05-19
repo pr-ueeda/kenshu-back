@@ -60,16 +60,17 @@ $rows = $article->get_all();
             <th>ユーザー</th>
             <th>サムネイル</th>
             <th>タイトル</th>
-            <th class="center">本文</th>
         </tr>
         </thead>
         <tbody>
         <tr class=" hidden-xs">
             <?php foreach ($rows as $row) { ?>
             <td><?php echo htmlspecialchars($row['display_name'])?></td>
-            <td><img src="<?php echo $row['image_url']?>"</td>
+            <td><img src="<?php echo $row['image_url']?>"></td>
             <td><?php echo htmlspecialchars($row['title'])?></td>
-            <td class="center"><?php echo htmlspecialchars($row['body'])?></td>
+            <form method="post" action="features/article/article.php">
+                <td><button id="read" name="read" class="btn  btn-primary  btn-sm" value="<?=$row['article_id'] ?>" type="submit">読む</button></td>
+            </form>
         </tr>
         <?php } ?>
         </tbody>

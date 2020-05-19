@@ -61,6 +61,33 @@ class articles extends Model {
         return $result;
     }
 
+    public function get_article(): array {
+        $session_article_id = $_SESSION['article_id'];
+
+        $sql = "SELECT * FROM {$this->users_table}
+        INNER JOIN {$this->user_articles_table}
+        ON {$this->user_articles_table}.user_id = {$this->users_table}.user_id
+        INNER JOIN {$this->articles_table}
+        ON {$this->articles_table}.article_id = {$this->user_articles_table}.article_id
+        INNER JOIN {$this->article_images_table}
+        ON {$this->article_images_table}.article_id = {$this->articles_table}.article_id
+        INNER JOIN {$this->images_table}
+        ON {$this->images_table}.image_id = {$this->article_images_table}.image_id
+        INNER JOIN {$this->thumbnails_table}
+        ON {$this->thumbnails_table}.image_id = {$this->images_table}.image_id
+        WHERE {$this->articles_table}.article_id = ($session_article_id)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array());
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+
+        return $result;
+    }
+
     public function get_meta(): array {
         $session_user_id = $_SESSION['user_id'];
 
