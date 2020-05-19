@@ -13,7 +13,6 @@ if (isset($_POST['posts'])) {
 
     if ($tag_name != '') {
         $tags = explode('#', $tag_name);
-        var_dump($tags);
         foreach ($tags as $tag) {
             $article->insert_tag($tag);
         }

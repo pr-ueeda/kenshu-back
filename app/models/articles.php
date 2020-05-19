@@ -154,11 +154,9 @@ class articles extends Model {
 
     public function insert_tag(string $tag_name) {
         $sql = "INSERT INTO {$this->tags_table} (tag_name) VALUES (?)";
-        var_dump($tag_name);
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array($tag_name));
-            var_dump($stmt->errorInfo());
             $tag_id = $this->pdo->lastInsertId('tag_id');
             $_SESSION['tag_id'] = $tag_id;
         } catch (\Exception $e) {
