@@ -10,3 +10,9 @@
 docker-compose.yml
 # migration package
 /vender
+
+/bootstrap-4.4.1
+
+/cms-bootstrap3-CU-JA
+
+/images
