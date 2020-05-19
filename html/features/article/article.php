@@ -8,6 +8,7 @@ $_SESSION['article_id'] = $_POST['read'];
 
 $articles = new articles();
 $rows = $articles->get_article();
+var_dump($rows);
 ?>
 
 <!DOCTYPE>
@@ -31,6 +32,7 @@ $rows = $articles->get_article();
                     <div class="blog-post">
                         <h2 class="blog-post-title"><?php echo $row['title']; ?></h2>
                         <p class="blog-post-meta"><?php echo '投稿者:' . $row['display_name']; ?></p>
+                        <p class="blog-post-meta"><?php echo $row['tag_name']; ?></p>
                         <hr>
                         <img src="<?php echo $row['image_url']?>">
                         <p><?php echo $row['body']; ?></p>
