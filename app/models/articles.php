@@ -119,6 +119,7 @@ class articles extends Model {
             $this->insert_user_articles($article_id);
             $this->insert_article_images($article_id, $_SESSION['image_id']);
             $this->insert_thumbnail($article_id, $_SESSION['image_id']);
+            $this->insert_article_tags($article_id, $_SESSION['tag_id']);
             header('Location: ../user/mypage.php');
             exit();
         } catch (\Exception $e) {
@@ -151,6 +152,18 @@ class articles extends Model {
         }
     }
 
+    public function insert_tag(string $tag_name) {
+        $sql = "INSERT INTO {$this->tags_table} (tag_name) VALUES (?)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array($tag_name));
+            $tag_id = $this->pdo->lastInsertId('tag_id');
+            $_SESSION['tag_id'] = $tag_id;
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+    }
+
     private function insert_user_articles(int $article_id) {
         $sql = "INSERT INTO {$this->user_articles_table} (user_id, article_id) VALUES (?, ?)";
         $session_user_id = $_SESSION['user_id'];
@@ -169,6 +182,17 @@ class articles extends Model {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(array($article_id, $image_id));
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+    }
+
+    private function insert_article_tags(int $article_id, int $tag_id) {
+        $sql = "INSERT INTO {$this->article_tags_table} (article_id, tag_id) VALUES (?, ?)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(array($article_id, $tag_id));
         } catch (\Exception $e) {
             exit($e->getMessage());
         }

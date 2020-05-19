@@ -9,6 +9,14 @@ $article = new articles();
 if (isset($_POST['posts'])) {
     $title = $_POST['title'];
     $body = $_POST['body'];
+    $tag_name = $_POST['tag'];
+
+    if ($tag_name != '') {
+        $tags = explode('#', $tag_name);
+        foreach ($tags as $tag) {
+            $article->insert_tag($tag);
+        }
+    }
 
     $article->insert_article($title, $body);
 }
@@ -44,6 +52,9 @@ if (isset($_POST['posts'])) {
 <form method="post">
     <label>題名</label>
     <input type="text" id="title" name="title" class="form-control" placeholder="タイトル"><br>
+    <label>タグ</label>
+    <input type="text" id="tag" name="tag" class="form-control" placeholder="#から始めて、単語をスペースで区切って入力"><br>
+    <button name="add_tag" id="add_tag" type="submit" class="btn btn-info">タグを登録</button>
     <label>本文</label>
     <textarea id="body" name="body" class="form-control" rows="50" cols="80" placeholder="本文をここに入力"></textarea>
     <button name="posts" id="posts" type="submit" class="btn btn-info">投稿</button>
