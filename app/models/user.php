@@ -47,6 +47,7 @@ class user extends Model {
             $stmt->bindParam(':email_address', $email_address, PDO::PARAM_STR, 100);
             $stmt->bindParam(':password', $password, PDO::PARAM_STR, 100);
             $stmt->execute();
+            var_dump($stmt->errorInfo());
             $_SESSION['display_name'] = $display_name;
             header("Location: ../../index.php");
             exit();

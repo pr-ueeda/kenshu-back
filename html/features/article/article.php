@@ -33,7 +33,10 @@ $rows = $articles->get_article();
                         <p class="blog-post-meta"><?php echo '投稿者:' . $row['display_name']; ?></p>
                         <p class="blog-post-meta"><?php echo $row['tag_name']; ?></p>
                         <hr>
-                        <img src="<?php echo $row['image_url']?>">
+                        <img src="<?php
+                        $replace_img_url = str_replace('/var/www/html', '', $row['image_url']);
+                        $image_url = ltrim($replace_img_url);
+                        echo $image_url;?>" width="100" height="100">
                         <p><?php echo $row['body']; ?></p>
                     </div><!-- /.blog-post -->
                 <?php } ?>

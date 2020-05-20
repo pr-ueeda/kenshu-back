@@ -68,7 +68,10 @@ $rows = $article->get_articles();
         <tr class=" hidden-xs">
             <?php foreach ($rows as $row) { ?>
             <td><?php echo htmlspecialchars($row['display_name'])?></td>
-            <td><img src="<?php echo $row['image_url']?>"></td>
+            <td><img src="<?php
+                $replace_img_url = str_replace('/var/www/html', '', $row['image_url']);
+                $image_url = ltrim($replace_img_url);
+                echo $image_url;?>" width="100" height="100" ></td>
             <td><?php echo htmlspecialchars($row['title'])?></td>
             <form method="post" action="features/article/article.php">
                 <td><button id="read" name="read" class="btn  btn-primary  btn-sm" value="<?=$row['article_id'] ?>" type="submit">読む</button></td>
